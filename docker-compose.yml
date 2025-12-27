@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: focused-postgres
+    environment:
+      POSTGRES_DB: focused
+      POSTGRES_USER: focusedAdmin
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: focused-backend
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/focused
+      SPRING_DATASOURCE_USERNAME: focusedAdmin
+      SPRING_DATASOURCE_PASSWORD: 123456
+
+volumes:
+  postgres_data:
